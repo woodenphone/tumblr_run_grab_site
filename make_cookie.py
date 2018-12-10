@@ -24,8 +24,8 @@ import requests.exceptions
 # local
 import common
 from login import tumblr_login# tumblr_login(req_ses, email, username, password)
-import dev_config as config# For my personal development use
-##import config# For disribution use
+##import dev_config as config# For my personal development use
+import config# For disribution use
 
 
 def make_cookie(cookie_path, email, username, password):

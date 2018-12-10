@@ -26,8 +26,8 @@ import requests.exceptions
 # local
 import common
 import make_cookie
-import dev_config as config# For my personal development use
-##import config# For disribution use
+##import dev_config as config# For my personal development use
+import config# For disribution use
 
 def check_if_logged_in(req_ses):
     #TODO
