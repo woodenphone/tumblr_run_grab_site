@@ -37,37 +37,54 @@ def check_if_logged_in(req_ses):
 
 def make_item_name(blog_name, username):
     item_name = '{blog_name}.u{username}'.format(blog_name=blog_name, username=username)
+    logging.debug('item_name={0!r}'.format(item_name))
     return item_name
 
 
 def find_blog_name_simple(blog_url):# TODO
-    name_search = re.search(r'[^\.\\/]\.tumblr\.com', blog_url)
+    # http://lemondrop-.tumblr.com/
+    # lemondrop-
+    name_search = re.search('([^\.\\\/]+)\.tumblr\.com', blog_url)
     if name_search:
         blog_name = name_search.group(1)
-    return blog_name
-
+        logging.debug('blog_name={0!r}'.format(blog_name))
+        return blog_name
+    else:
+        return None
 
 def find_blog_name_thorough(req_ses, blog_url):# TODO
     logging.debug('Using slower, more thorough name-finding on {0!r}'.format(blog_url))
     # Extract domain
-    domain_search = re.search(r'(?:https?://)?(?:www\.)?[^\.\\/]\.\w+/?', blog_url)
+    # 'http://nsfw.kevinsano.com'
+    # 'nsfw.kevinsano.com'
+    domain_search = re.search(r'(?:https?://)?([^\\/]+\.\w+)/?', blog_url)
     if domain_search:
         domain = domain_search.group(1)
+        logging.debug('domain={0!r}'.format(domain))
+    else:
+        logging.error('Could not identify domain! Failing.')
+        return None
     # Genreate archive page URL
-    blog_archive_url = 'http://{}/archive/'.format(domain)
-    archive_html_path = os.path.join('debug', 'find_blog_name_thorough.archive.htm')
+    blog_rss_url = 'http://{0}/rss'.format(domain)
+    logging.debug('blog_rss_url={0!r}'.format(blog_rss_url))
+    rss_path = os.path.join('debug', 'run_grab_site.find_blog_name_thorough.rss.rss')
     # Load archive page
-    archive_res = common.fetch(
+    rss_res = common.fetch(
         requests_session=req_ses,
-        url=blog_archive_url,
+        url=blog_rss_url,
         method='get',
     )
     common.write_file(# Save to file for debugging
-        file_path=archive_html_path,
-        data=archive_res.content
+        file_path=rss_path,
+        data=rss_res.content
     )
     # Extract blog name from page
-    # Find follow section
+    # '<generator>Tumblr (3.0; @nsfwkevinsano)</generator>'
+    # 'nsfwkevinsano'
+    name_search = re.search('<generator>[^<]{0,25}@([^)<]+)\)</generator>', rss_res.content)
+    if name_search:
+        blog_name = name_search.group(1)
+    logging.debug('blog_name={0!r}'.format(blog_name))
     return blog_name
 
 
@@ -179,9 +196,11 @@ def start_grab_site_server(grab_site_port):
         return
 
     # If not running, start server
+    # TODO : Make this be able to start gs-server
     gs_server_command = (
 ##        'gs-server'
-        'bash start_gs_server.sh'
+##        'bash start_gs_server.sh'
+        'gs-server >/dev/null 2>&1'
     )
     logging.info('Running command: {0!r}'.format(gs_server_command))
     try:
@@ -244,7 +263,7 @@ def download_from_list(req_ses, list_file_path, username,
     return
 
 
-def main():
+def save_blog_list():
     # Get cookie
     req_ses = make_cookie.make_cookie(
         cookie_path=config.cookie_path,
@@ -252,6 +271,8 @@ def main():
         username=config.username,
         password=config.password
     )
+
+
     # Run grab-site
     start_grab_site_server(grab_site_port=config.grab_site_port)
     #
@@ -267,6 +288,18 @@ def main():
         base_done_dir=config.base_done_dir,
     )
     return
+
+
+def dev():
+    #
+    find_blog_name(req_ses, blog_url='http://lemondrop-.tumblr.com/')
+    find_blog_name(req_ses, blog_url='http://nsfw.kevinsano.com')
+    #
+    return
+
+
+def main():
+    save_blog_list()
 
 
 if __name__ == '__main__':
