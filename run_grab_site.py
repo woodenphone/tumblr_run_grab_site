@@ -140,8 +140,8 @@ def run_grab_site_one_blog(req_ses, blog_name, blog_url, username,
         +' --finished-warc-dir="{wd}"'.format(wd=item_warc_dir)
         +' --ua "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:60.0) Gecko/20100101 Firefox/60.0 but not really nor Googlebot/2.1"'
         +' --igsets=misc,singletumblr'
-        +' --import-ignores={ign_p}'.format(ign_p=ignores_path)
-        +' --wpull-args=--load-cookies={cp}'.format(cp=cookie_path)
+        +' --import-ignores="{ign_p}"'.format(ign_p=ignores_path)
+        +' --wpull-args=--load-cookies="{cp}"'.format(cp=cookie_path)
         +' --delay=100-250'
         +' --concurrency=8'
     )
