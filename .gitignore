@@ -15,3 +15,5 @@ grab-site
 # Config files
 *_config.py
 *.yaml
+urls.txt
+cookie.txt

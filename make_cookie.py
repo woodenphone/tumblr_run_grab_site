@@ -24,13 +24,14 @@ import requests.exceptions
 # local
 import common
 from login import tumblr_login# tumblr_login(req_ses, email, username, password)
-##import dev_config as config# For my personal development use
-import config# For disribution use
+import dev_config as config# For my personal development use
+##import config# For disribution use
 
 
-def main():
+def make_cookie(cookie_path, email, username, password):
     # Setup requests
     req_ses = requests.Session()# Setup requests session
+    cookie_dir = os.path.dirname(cookie_path)
     if (cookie_dir):
         if not os.path.exists(cookie_dir):
             os.makedirs(cookie_dir)
@@ -43,6 +44,16 @@ def main():
     # Save cookie to file
     req_ses.cookies.save()
     assert(os.path.exists(config.cookie_path))# File must exist at this point
+    return req_ses
+
+
+def main():
+    make_cookie(
+        cookie_path=config.cookie_path,
+        email=config.email,
+        username=config.username,
+        password=config.password
+    )
     return
 
 
