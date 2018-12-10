@@ -99,6 +99,16 @@ def find_blog_name(req_ses, blog_url):
     return blog_name
 
 
+def assert_paths_exist(paths):
+    """For better clarity than just asserts.
+    This way it gives an error message showing what path was supposed to be found"""
+    for current_path in paths:
+        if not os.path.exists(current_path):
+            logging.error('Path was expected to exist but doesnt: {0}'.format(current_path))
+            raise ValueError()
+    return
+
+
 def run_grab_site_one_blog(req_ses, blog_name, blog_url, username,
     item_name, item_temp_dir, item_done_dir,
     item_warc_dir, cookie_path, ignores_path):# TODO
@@ -115,10 +125,12 @@ def run_grab_site_one_blog(req_ses, blog_name, blog_url, username,
     assert(os.path.exists(item_warc_dir))
 
     # Ensure expected files exist
-    assert(os.path.exists(item_temp_dir))
-    assert(os.path.exists(item_warc_dir))
-    assert(os.path.exists(ignores_path))
-    assert(os.path.exists(cookie_path))
+    assert_paths_exist(paths=[
+        item_temp_dir,
+        item_warc_dir,
+        ignores_path,
+        cookie_path
+    ])
 
     # Setup grab-site command
     gs_command = (''
@@ -178,7 +190,7 @@ def check_if_grab_site_active(grab_site_port=29000):
         # Attempt to load job tracker page
         res = requests.get('http://localhost:{0}'.format(grab_site_port))
         # Could load page
-        print res.content
+        html = res.content
         return True
     except requests.ConnectionError, err:
         # Could not load page
