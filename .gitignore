@@ -1,0 +1,17 @@
+# dirs
+debug/
+download/
+dl/
+git_ignored/
+temp/
+config/
+grab-site/
+
+grab-site
+
+# junk
+*.pyc
+
+# Config files
+*_config.py
+*.yaml
