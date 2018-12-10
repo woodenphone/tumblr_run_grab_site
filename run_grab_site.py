@@ -133,19 +133,32 @@ def run_grab_site_one_blog(req_ses, blog_name, blog_url, username,
     ])
 
     # Setup grab-site command
-    gs_command = (''
-        +'grab-site'# Command name
+    gs_command = (
+        'grab-site'# Command name
         +' --no-offsite-links'
         +' --dir="{td}"'.format(td=item_temp_dir)
-        +' --finished-warc-dir="{wd}"'.format(wd=item_warc_dir)
+##        +' --finished-warc-dir="{wd}"'.format(wd=item_warc_dir)
         +' --ua "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:60.0) Gecko/20100101 Firefox/60.0 but not really nor Googlebot/2.1"'
         +' --igsets=misc,singletumblr'
-        +' --import-ignores="{ign_p}"'.format(ign_p=ignores_path)
-        +' --wpull-args=--load-cookies="{cp}"'.format(cp=cookie_path)
+##        +' --import-ignores="{ign_p}"'.format(ign_p=ignores_path)
+##        +' --wpull-args=--load-cookies="{cp}"'.format(cp=cookie_path)
         +' --delay=100-250'
         +' --concurrency=8'
     )
 
+    gs_command = [
+        'grab-site',# Command name
+        '{0}'.format(blog_url),# Target URL
+        ' --no-offsite-links',# Prohibit external links
+        ' --dir="{td}"'.format(td=item_temp_dir),# Specify output dir
+##        +' --finished-warc-dir="{wd}"'.format(wd=item_warc_dir)# Specify warc final location
+        ' --ua "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:60.0) Gecko/20100101 Firefox/60.0 but not really nor Googlebot/2.1"',# Specify useragent
+        ' --igsets=misc,singletumblr',# Specify ignore pattern lists
+##        +' --import-ignores="{ign_p}"'.format(ign_p=ignores_path)
+##        +' --wpull-args=--load-cookies="{cp}"'.format(cp=cookie_path)
+        ' --delay=100-250',
+        ' --concurrency=8',
+    ]
     # Run grab-site for blog
     logging.info('Running command: {0!r}'.format(gs_command))
     try:
