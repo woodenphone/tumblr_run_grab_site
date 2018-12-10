@@ -36,6 +36,7 @@ def check_if_logged_in(req_ses):
 
 
 def find_blog_name(blog_url):# TODO
+    name_search = re.search(r'[^\.\\/]\.tumblr\.com', blog_url)
     return blog_name
 
 
@@ -115,19 +116,39 @@ def run_grab_site_one_blog(blog_name, blog_url, username, base_temp_dir, base_do
 
 
 
+
+def check_if_grab_site_active(grab_site_port=29000):
+    res = requests.get('localhost:{0}'.format(grab_site_port))
+    print res.content
+    return True
+
+
 def start_grab_site_server():
     logging.info('Ensuring grab-site server is running')
     # Check if server already running
+    gs_server_running = check_if_grab_site_active(grab_site_port=29000)
+    if gs_server_running:
+        logging.info('gs-server already running, no need to start it')
+        return
+
     # If not running, start server
     gs_server_command = (
-        ''
-        ''
+        'gs-server'
     )
-    logging.info('Running command: {0!r}'.format(gs_command))
-    # TODO
-
+    logging.info('Running command: {0!r}'.format(gs_server_command))
+    try:
+        subprocess.check_call(gs_server_command)
+        return_code = 0# If we didn't throw an exception it was 0
+    except subprocess.CalledProcessError, err:
+        return_code=err.returncode
+    logging.debug('Command returned {0!r}'.format(return_code))
+    logging.info('Finished starting gs-server')
     return
 
+
+def download_from_list():
+    #TODO
+    pass
 
 
 def main():
@@ -140,6 +161,7 @@ def main():
     )
     # Run grab-site
     start_grab_site_server()
+    #
     return
 
 
