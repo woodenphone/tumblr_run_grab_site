@@ -158,7 +158,7 @@ def run_grab_site_one_blog(req_ses, blog_name, blog_url, username,
 ##        +' --wpull-args=--load-cookies="{cp}"'.format(cp=cookie_path)
         ' --delay=100-250',
         ' --concurrency=8',
-        '{0}'.format(blog_url),# Target URL, goes last
+        ' {0}'.format(blog_url),# Target URL, goes last
     ]
     # Run grab-site for blog
     logging.info('Running command: {0!r}'.format(gs_command))
@@ -258,7 +258,7 @@ def download_from_list(req_ses, list_file_path, username,
                 logging.info('Could not get a blog name, skipping this line')
                 continue
             # Make blog base url
-            blog_url = 'https://{0}.tumblr.com/'.format(blog_name)
+            blog_url = 'http://{0}.tumblr.com/'.format(blog_name)
             logging.debug('blog_url={0!r}'.format(blog_url))
             # Generate item name
             item_name = make_item_name(blog_name=blog_name, username=username)
