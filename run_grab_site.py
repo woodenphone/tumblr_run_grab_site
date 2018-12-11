@@ -26,8 +26,8 @@ import requests.exceptions
 # local
 import common
 import make_cookie
-##import dev_config as config# For my personal development use
-import config# For disribution use
+import dev_config as config# For my personal development use
+##import config# For disribution use
 
 def check_if_logged_in(req_ses):
     #TODO
@@ -116,14 +116,17 @@ def run_grab_site_one_blog(req_ses, blog_name, blog_url, username,
     logging.debug('run_grab_site_one_blog() locals()={0!r}'.format(locals()))# Log function arguments
     logging.info('Saving blog: {0}'.format(blog_url))
 
-    if (item_temp_dir):# Ensure temp dir exists
-        if not os.path.exists(item_temp_dir):
-            os.makedirs(item_temp_dir)
-    assert(os.path.exists(item_temp_dir))
-
-    if not os.path.exists(item_warc_dir):# Ensure warc dir exists
-        os.makedirs(item_warc_dir)
-    assert(os.path.exists(item_warc_dir))
+##    logging.debug('item_temp_dir={0!r}'.format(item_done_dir))
+##    if (item_temp_dir):# Ensure temp dir exists
+##        if (not os.path.exists(item_temp_dir)):
+##            os.makedirs(item_temp_dir)
+##    assert(os.path.exists(item_temp_dir))
+##
+##    logging.debug('item_warc_dir={0!r}'.format(item_done_dir))
+##    if (item_warc_dir):
+##        if (not os.path.exists(item_warc_dir)):# Ensure warc dir exists
+##            os.makedirs(item_warc_dir)
+##    assert(os.path.exists(item_warc_dir))
 
     # Ensure expected files exist
     assert_paths_exist(paths=[
@@ -134,32 +137,20 @@ def run_grab_site_one_blog(req_ses, blog_name, blog_url, username,
     ])
 
     # Setup grab-site command
-    gs_command = (
-        'grab-site'# Command name
-        +' --no-offsite-links'
-        +' --dir="{td}"'.format(td=item_temp_dir)
-##        +' --finished-warc-dir="{wd}"'.format(wd=item_warc_dir)
-        +' --ua "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:60.0) Gecko/20100101 Firefox/60.0 but not really nor Googlebot/2.1"'
-        +' --igsets=misc,singletumblr'
-##        +' --import-ignores="{ign_p}"'.format(ign_p=ignores_path)
-##        +' --wpull-args=--load-cookies="{cp}"'.format(cp=cookie_path)
-        +' --delay=100-250'
-        +' --concurrency=8'
-    )
-
-    gs_command = [
+    gs_command_as_list = [
         'grab-site',# Command name
         ' --no-offsite-links',# Prohibit external links
         ' --dir="{td}"'.format(td=item_temp_dir),# Specify output dir
-##        +' --finished-warc-dir="{wd}"'.format(wd=item_warc_dir)# Specify warc final location
+        ' --finished-warc-dir="{wd}"'.format(wd=item_warc_dir),# Specify warc final location
         ' --ua "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:60.0) Gecko/20100101 Firefox/60.0 but not really nor Googlebot/2.1"',# Specify useragent
         ' --igsets=misc,singletumblr',# Specify ignore pattern lists
-##        +' --import-ignores="{ign_p}"'.format(ign_p=ignores_path)
-##        +' --wpull-args=--load-cookies="{cp}"'.format(cp=cookie_path)
-        ' --delay=100-250',
-        ' --concurrency=8',
-        ' {0}'.format(blog_url),# Target URL, goes last
+        ' --wpull-args=--load-cookies="{cp}"'.format(cp=cookie_path),
+        ' "{0}"'.format(blog_url),# Target URL, goes last
     ]
+    logging.debug('gs_command_as_list={0!r}'.format(gs_command_as_list))
+    gs_command = ''.join(gs_command_as_list)
+    logging.debug('gs_command={0!r}'.format(gs_command))
+
     # Run grab-site for blog
     logging.info('Running command: {0!r}'.format(gs_command))
     try:
@@ -178,10 +169,11 @@ def run_grab_site_one_blog(req_ses, blog_name, blog_url, username,
 
 
     # Move files to final location
-    # Prepare location
-    if (item_done_dir):# Ensure done dir exists
-        if not os.path.exists(item_done_dir):
-            os.makedirs(item_done_dir)
+##    # Prepare location
+##    logging.debug('item_done_dir={0!r}'.format(item_done_dir))
+##    if (item_done_dir):# Ensure done dir exists
+##        if (not os.path.exists(item_done_dir)):
+##            os.makedirs(item_done_dir)
     assert(os.path.exists(item_done_dir))# This folder should exist by this point.
     logging.info('Saved blog: {0}'.format(blog_url))
 
@@ -291,28 +283,39 @@ def download_from_list(req_ses, list_file_path, username,
 
 
 def save_blog_list():
+    # Load values from config
+    list_file_path=config.list_file_path,
+    username=config.username,
+    email=config.email,
+    password=config.password
+    cookie_path=config.cookie_path
+    ignores_path=config.ignores_path,
+    base_temp_dir=config.base_temp_dir,
+    base_done_dir=config.base_done_dir,
+    grab_site_port=config.grab_site_port
+
     # Get cookie
-    req_ses = make_cookie.make_cookie(
-        cookie_path=config.cookie_path,
-        email=config.email,
-        username=config.username,
-        password=config.password
+    req_ses = make_cookie(
+        cookie_path=cookie_path,
+        email=email,
+        username=username,
+        password=password
     )
 
 
     # Run grab-site
-    start_grab_site_server(grab_site_port=config.grab_site_port)
+    start_grab_site_server(grab_site_port=grab_site_port)
     #
     find_blog_name_thorough(req_ses, blog_url='http://jayisbutts.com/')
     # Work over list
     download_from_list(
         req_ses=req_ses,
-        list_file_path=config.list_file_path,
-        username=config.username,
-        cookie_path=config.cookie_path,
-        ignores_path=config.ignores_path,
-        base_temp_dir=config.base_temp_dir,
-        base_done_dir=config.base_done_dir,
+        list_file_path=list_file_path,
+        username=username,
+        cookie_path=cookie_path,
+        ignores_path=ignores_path,
+        base_temp_dir=base_temp_dir,
+        base_done_dir=base_done_dir,
     )
     return
 
