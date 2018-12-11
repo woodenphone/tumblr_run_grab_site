@@ -140,8 +140,8 @@ def run_grab_site_one_blog(req_ses, blog_name, blog_url, username,
     gs_command = [
         'grab-site'# Command name
         ,'--no-offsite-links'# Prohibit external links
-        ,'--dir=\'{td}\''.format(td=item_temp_dir)# Specify output dir
-        ,'--finished-warc-dir=\'{wd}\''.format(wd=item_warc_dir)# Specify warc final location
+        ,'--dir={td}'.format(td=item_temp_dir)# Specify output dir
+        ,'--finished-warc-dir={wd}'.format(wd=item_warc_dir)# Specify warc final location
         ,'--ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:60.0) Gecko/20100101 Firefox/60.0 but not really nor Googlebot/2.1"'# Specify useragent
         ,'--igsets=misc,singletumblr'# Specify ignore pattern lists
         ,'--wpull-args=--load-cookies={cp}'.format(cp=cookie_path)
