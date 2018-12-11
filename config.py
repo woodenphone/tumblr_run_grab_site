@@ -24,7 +24,7 @@ list_file_path = os.path.join(os.getcwd(), 'urls.txt')# List of tumblr blogs to 
 
 # Download paths
 base_temp_dir = os.path.join(os.getcwd(), 'temp')# Where things are put while they are being worked on
-base_done_dir = os.path.join(os.getcwd(), 'dl')# Where things are moved once they are finished
+base_done_dir = os.path.join(os.getcwd(), 'done')# Where things are moved once they are finished
 
 # Configuration files
 ignores_path = os.path.join(os.getcwd(), 'ignore_sets')

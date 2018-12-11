@@ -113,6 +113,7 @@ def run_grab_site_one_blog(req_ses, blog_name, blog_url, username,
     item_name, item_temp_dir, item_done_dir,
     item_warc_dir, cookie_path, ignores_path):# TODO
     """Setup, run, and cleanup for one tumblr blog download through grab-site"""
+    logging.debug('run_grab_site_one_blog() locals()={0!r}'.format(locals()))# Log function arguments
     logging.info('Saving blog: {0}'.format(blog_url))
 
     if (item_temp_dir):# Ensure temp dir exists
@@ -241,6 +242,7 @@ def start_grab_site_server(grab_site_port):
 def download_from_list(req_ses, list_file_path, username,
     cookie_path, ignores_path, base_temp_dir, base_done_dir,
     ):
+    logging.debug('download_from_list() locals()={0!r}'.format(locals()))# Log function arguments
     logging.info('Finished saving blogs from list file: {0}'.format(list_file_path))
     with open(list_file_path, 'ru') as lf:
         line_counter = 0
