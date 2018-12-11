@@ -149,7 +149,6 @@ def run_grab_site_one_blog(req_ses, blog_name, blog_url, username,
 
     gs_command = [
         'grab-site',# Command name
-        '{0}'.format(blog_url),# Target URL
         ' --no-offsite-links',# Prohibit external links
         ' --dir="{td}"'.format(td=item_temp_dir),# Specify output dir
 ##        +' --finished-warc-dir="{wd}"'.format(wd=item_warc_dir)# Specify warc final location
@@ -159,6 +158,7 @@ def run_grab_site_one_blog(req_ses, blog_name, blog_url, username,
 ##        +' --wpull-args=--load-cookies="{cp}"'.format(cp=cookie_path)
         ' --delay=100-250',
         ' --concurrency=8',
+        '{0}'.format(blog_url),# Target URL, goes last
     ]
     # Run grab-site for blog
     logging.info('Running command: {0!r}'.format(gs_command))
