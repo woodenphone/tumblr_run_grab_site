@@ -110,6 +110,36 @@ def assert_paths_exist(paths):
     return
 
 
+def run_grab_site_command(item_temp_dir, item_warc_dir, ignores, cookie_path, blog_url):
+    logging.debug('run_grab_site_command() locals()={0!r}'.format(locals()))# Log function arguments
+    # Setup grab-site command
+    gs_command = [
+        'grab-site'# Command name
+        ,'--no-offsite-links'# Prohibit external links
+        ,'--dir={td}'.format(td=item_temp_dir)# Specify output dir
+        ,'--finished-warc-dir={wd}'.format(wd=item_warc_dir)# Specify warc final location
+        ,'--ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:60.0) Gecko/20100101 Firefox/60.0 but not really nor Googlebot/2.1"'# Specify useragent
+##        ,'--igsets=misc'# Specify ignore pattern lists
+        ,'--import-ignores={0}'.format(ignores)
+        ,'--wpull-args=--load-cookies={cp}'.format(cp=cookie_path)
+        ,' {0}'.format(blog_url)# Target URL, goes last
+    ]
+    logging.debug('gs_command={0!r}'.format(gs_command))# Record command
+    try:# Run grab-site for blog
+        logging.info('Running command: {0}'.format(gs_command))# Announce command
+        subprocess.check_call(gs_command)
+        return_code = 0# If we didn't throw an exception it was 0
+    except subprocess.CalledProcessError, err:
+        return_code=err.returncode
+    logging.debug('Command returned {0!r}'.format(return_code))# Annnounce return code
+    # Validate run succeeded
+    # Check command return code
+    if (return_code != 0):
+        logging.error('Command failed!')
+        sys.exit(1)# Stop if error occured
+    return
+
+
 def run_grab_site_one_blog(req_ses, blog_name, blog_url, username,
     item_name, item_temp_dir, item_done_dir,
     item_warc_dir, cookie_path, ignores_path):# TODO
@@ -131,53 +161,29 @@ def run_grab_site_one_blog(req_ses, blog_name, blog_url, username,
 
     assert(os.path.exists(cookie_path))
 
-    # Setup grab-site command
-    gs_command = [
-        'grab-site'# Command name
-        ,'--no-offsite-links'# Prohibit external links
-        ,'--dir={td}'.format(td=item_temp_dir)# Specify output dir
-        ,'--finished-warc-dir={wd}'.format(wd=item_warc_dir)# Specify warc final location
-        ,'--ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:60.0) Gecko/20100101 Firefox/60.0 but not really nor Googlebot/2.1"'# Specify useragent
-##        ,'--igsets=misc'# Specify ignore pattern lists
-        ,'--import-ignores={0}'.format( os.path.join(os.getcwd(), 'tumblr_ignore_complete') )
-        ,'--wpull-args=--load-cookies={cp}'.format(cp=cookie_path)
-        ,' {0}'.format(blog_url)# Target URL, goes last
-    ]
-    logging.debug('gs_command={0!r}'.format(gs_command))
-    gs_command = ' '.join(gs_command)
-    logging.debug('gs_command={0!r}'.format(gs_command))
+    ignores = os.path.join(os.getcwd(), 'tumblr_ignore_complete')
 
-    # Run grab-site for blog
-    logging.info('Running command: {0}'.format(gs_command))
-    try:
-        subprocess.check_call(gs_command, shell=True)
-        return_code = 0# If we didn't throw an exception it was 0
-    except subprocess.CalledProcessError, err:
-        return_code=err.returncode
-    logging.debug('Command returned {0!r}'.format(return_code))
-
-    # Validate run succeeded
-    # TODO
-    # Check command return code
-    if (return_code != 0):
-        logging.error('Command failed!')
-        sys.exit(1)
-        pass# TODO: Handle error case
+    run_grab_site_command(
+        item_temp_dir=item_temp_dir,
+        item_warc_dir=item_warc_dir,
+        ignores=ignores,
+        cookie_path=cookie_path,
+        blog_url=blog_url,
+        )
     # Check for expected files
-
-
+    # TODO
     # Move files to final location
 ##    # Prepare location
 ##    logging.debug('ensuring exists: item_done_dir={0!r}'.format(item_done_dir))
 ##    if (item_done_dir):# Ensure done dir exists
 ##        if (not os.path.exists(item_done_dir)):
 ##            os.makedirs(item_done_dir)
-    assert(os.path.exists(item_done_dir))# This folder should exist by this point.
+##    assert(os.path.exists(item_done_dir))# This folder should exist by this point.
     logging.info('Saved blog: {0}'.format(blog_url))
 
-    # Move from temp to done
-    logging.debug('Moving files from {0!r} to {1!r}'.format(item_temp_dir, item_done_dir))
-    shutil.move(src=item_temp_dir, dst=item_done_dir)
+##    # Move from temp to done
+##    logging.debug('Moving files from {0!r} to {1!r}'.format(item_temp_dir, item_done_dir))
+##    shutil.move(src=item_temp_dir, dst=item_done_dir)
 
     # Cleanup
     logging.debug('Cleaning up')

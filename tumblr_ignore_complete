@@ -311,7 +311,7 @@ rainbowdash.net/api.+
 # canterlotavenue
 canterlotavenue.com/music/genre/.*/?s.+
 canterlotavenue.com/.+/?.+s=1.+
-store.canterlotavenue.com/.*/.*.(png\\jpeg\jpg|gif|webm|tiff|bmp|webp\heic\\heif)?t=.*
+store.canterlotavenue.com/.*/.*.(png\\jpeg\\jpg|gif|webm|tiff|bmp|webp\heic\\heif)?t=.*
 canterlotavenue.com/photo/.+/.+link=.*
 canterlotavenue.com/photo/.+/height%.+
 
