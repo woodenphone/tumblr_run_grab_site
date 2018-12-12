@@ -161,8 +161,16 @@ def run_grab_site_one_blog(req_ses, blog_name, blog_url, username,
 
     assert(os.path.exists(cookie_path))
 
-    ignores = os.path.join(os.getcwd(), 'tumblr_ignore_complete')
+##    ignores = ','.join([
+##        os.path.join(os.getcwd(), 'tumblr_ignore_sets', 'global'),
+##        os.path.join(os.getcwd(), 'tumblr_ignore_sets', 'blogs'),
+##        os.path.join(os.getcwd(), 'tumblr_ignore_sets', 'singletumblr'),
+##    ])
+##    ignores = os.path.join(os.getcwd(), 'tumblr_ignore_complete')
 
+    ignores = os.path.join(os.getcwd(), 'tumblr_ignore_sets', 'misc'),
+
+    # Run grab-site
     run_grab_site_command(
         item_temp_dir=item_temp_dir,
         item_warc_dir=item_warc_dir,
@@ -170,6 +178,7 @@ def run_grab_site_one_blog(req_ses, blog_name, blog_url, username,
         cookie_path=cookie_path,
         blog_url=blog_url,
         )
+
     # Check for expected files
     # TODO
     # Move files to final location

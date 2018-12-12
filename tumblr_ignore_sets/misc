@@ -1,0 +1,53 @@
+#tumblr.com
+/notes/.+/?from_c=.+
+/page/.+?route=.+
+tumblr.com/dashboard/.+
+tumblr.com/.+?before_time=.+
+tumblr.com/avatar_.+.(pnj|gif)
+tumblr.com/register.+
+tumblr.com.*?route=.*
+
+# equestria.tv
+equestria.tv:1337/.+
+
+# poniarcade.com
+poniarcade.com/punishments/page/\d{4,}
+
+# ponyvillelive.com
+ponyvillelive.com/station/request/.+
+
+# wikia
+wikia.+/images/.+?cb=.+
+/wiki/.+?action=.+
+/wiki/.+?oldid=.+
+/wiki/.+?page(from|until)=.+
+/wiki/.+diff=.+
+/wiki/.+offset=.+
+/wiki/MediaWiki.+
+/wiki/Special:WhatLinksHere?.+
+/wiki/Special:RecentChanges?.+
+/wiki/Local_Sitemap?.*
+/wiki/.*/Gallery/.*.(png|jpeg|jpg|gif|bmp|tiff|webp|webm|heic|heif)
+/wiki/.*.(png|gif|jpeg|jpg|tiff|webp|heic|heif|bmp|webm)
+
+# mlpforums.com
+mlpforums.com/.+?do=.+
+mlpforums.com/.+?tab=comments#.+
+mlpforums.com/.+?do=findComment.+
+
+# rainbowdash.net
+rainbowdash.net/main/oembed.+
+rainbowdash.net/api.+
+
+# canterlotavenue
+canterlotavenue.com/music/genre/.*/?s.+
+canterlotavenue.com/.+/?.+s=1.+
+store.canterlotavenue.com/.*/.*.(png\\jpeg\\jpg|gif|webm|tiff|bmp|webp\\heic\\heif)?t=.*
+canterlotavenue.com/photo/.+/.+link=.*
+canterlotavenue.com/photo/.+/height%.+
+
+# poniverse.net
+poniverse.net/oauth/.+
+
+# misc
+static.xx.fbcdn.net/rsrc.php.+
