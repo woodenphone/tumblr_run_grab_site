@@ -112,6 +112,11 @@ def assert_paths_exist(paths):
 
 def run_grab_site_command(item_temp_dir, item_warc_dir, ignores, cookie_path, blog_url):
     logging.debug('run_grab_site_command() locals()={0!r}'.format(locals()))# Log function arguments
+    assert(type(item_temp_dir) in [str, unicode])
+    assert(type(item_warc_dir) in [str, unicode])
+    assert(type(ignores) in [str, unicode])
+    assert(type(cookie_path) in [str, unicode])
+    assert(type(blog_url) in [str, unicode])
     # Setup grab-site command
     gs_command = [
         'grab-site'# Command name
@@ -168,7 +173,7 @@ def run_grab_site_one_blog(req_ses, blog_name, blog_url, username,
 ##    ])
 ##    ignores = os.path.join(os.getcwd(), 'tumblr_ignore_complete')
 
-    ignores = os.path.join(os.getcwd(), 'tumblr_ignore_sets', 'misc'),
+    ignores = os.path.join(os.getcwd(), 'tumblr_ignore_sets', 'misc')
 
     # Run grab-site
     run_grab_site_command(
@@ -188,16 +193,17 @@ def run_grab_site_one_blog(req_ses, blog_name, blog_url, username,
 ##        if (not os.path.exists(item_done_dir)):
 ##            os.makedirs(item_done_dir)
 ##    assert(os.path.exists(item_done_dir))# This folder should exist by this point.
-    logging.info('Saved blog: {0}'.format(blog_url))
 
-##    # Move from temp to done
-##    logging.debug('Moving files from {0!r} to {1!r}'.format(item_temp_dir, item_done_dir))
-##    shutil.move(src=item_temp_dir, dst=item_done_dir)
+    # Move from temp to done
+    logging.debug('Moving files from {0!r} to {1!r}'.format(item_temp_dir, item_done_dir))
+    shutil.move(src=item_temp_dir, dst=item_done_dir)
 
     # Cleanup
     logging.debug('Cleaning up')
-    # TODO
-    # Remove temp dir
+    if (os.path.exists(item_temp_dir)):# Remove temp dir
+        shutil.rmtree(item_temp_dir)
+    if (os.path.exists(item_warc_dir)):# Remove warc dir
+        shutil.rmtree(item_warc_dir)
     logging.info('Finished saving blog {0!r}'.format(blog_name))
     return
 
